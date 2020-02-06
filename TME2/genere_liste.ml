@@ -1,5 +1,3 @@
-(* Calcule le nombre de chiffre identique au début d'une liste*)
-(*test ssh*)
 let rec calcul_prefixe (l : int list) : int =
   match l with
   | [] -> 0
