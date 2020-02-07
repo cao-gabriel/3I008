@@ -1,13 +1,21 @@
-let rec cherche_car (chaine : string) (c : char) : int =
-  if String.length chaine = 0 then -1
-  else if (String.get chaine 0) = c then 0
-  else 1 + (cherche_car (String.sub chaine 1 (String.length chaine - 1)) c)
+let cherche_car (car : char) (str : string) =
+  let rec loop indice =
+    if String.length str = indice then -1
+    else
+      begin
+        if String.get str indice = car then indice
+        else loop (indice + 1)
+      end
+  in
+  loop 0
 
 
-let rec ajout_espace (chaine : string) : string =
-  if String.length chaine = 0 then ""
-  else
-    let c = String.sub chaine 0 1 in
-    if c = "."  then ". " ^ ajout_espace (String.sub chaine 1 (String.length chaine - 1))
-    else if c = ","  then ", " ^ ajout_espace (String.sub chaine 1 (String.length chaine - 1))
-    else c ^  ajout_espace (String.sub chaine 1 (String.length chaine - 1))
+let ajout_espace (str : string) : string=
+  let rec loop (start : int) (indice : int) (acc : string list) : string list=
+    if (String.length str = indice) then (String.sub str start (indice - start))::acc
+    else
+    (if (String.get str indice = ',' || String.get str indice = '.')
+    then loop (indice) (indice+1) ((String.sub str start (indice - start))::acc)
+    else loop start (indice+1) acc)
+  in
+  String.concat " " (List.rev (loop 0 0 []))
