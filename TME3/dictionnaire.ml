@@ -1,6 +1,8 @@
 type noeud = Lettre of (char * bool * arbre_lex)
 and arbre_lex = noeud list
 exception Deja_defini of string
+
+
 let existe (mot : string) (dico : arbre_lex) : bool =
   let rec loop (indice : int) (dico : arbre_lex) =
     match dico with
@@ -19,28 +21,29 @@ let existe (mot : string) (dico : arbre_lex) : bool =
   in
   loop 0 dico
 
-let dico = [Lettre('c', false, [Lettre('a', false, [Lettre('t', true, [])])])]
-
 let ajoute (mot : string) (dico : arbre_lex) : arbre_lex =
   let rec loop (indice : int) (dico : arbre_lex) : arbre_lex =
     if (indice = String.length mot)
-    then []
+    then dico
     else
       match dico with
       |[] -> [Lettre(String.get mot indice, indice + 1= String.length mot,
                      loop (indice + 1) dico)]
       |Lettre(c, b, fils)::xs ->
         begin
-          if (c = String.get mot indice) then Lettre(c, b, (loop (indice + 1) fils))::xs
+          if (c = String.get mot indice)
+          then
+            begin
+              if (indice + 1 = String.length mot) then Lettre(c, true, (loop (indice + 1) fils))::xs
+              else Lettre(c, b, (loop (indice + 1) fils))::xs
+            end
           else Lettre(c,b, fils)::(loop indice xs)
         end
 
   in
-  try
-    if existe mot dico then raise(Deja_defini(mot))
-    else loop 0 dico
-  with
-    Deja_defini(mot) -> dico
+  if existe mot dico then raise(Deja_defini(mot))
+  else loop 0 dico
+
 
 let construit (l : string list) : arbre_lex =
   let rec loop (l : string list) (acc: arbre_lex) =
@@ -55,19 +58,40 @@ let list_de_dict (dico : arbre_lex) : string list =
     match dico with
     |[] -> acc
     |Lettre(c, fin, fils)::xs ->
-      if fin then loop fils ((current_word^(Char.escaped c))::acc) (current_word ^ (Char.escaped c)) @ (forest_list xs current_word)
-      else loop fils acc (current_word ^ Char.escaped c) @ (forest_list xs current_word)
+      let new_str = (current_word^(Char.escaped c)) in
+      if fin then loop fils (new_str::acc) new_str @ (forest_list xs current_word)
+      else loop fils acc new_str @ (forest_list xs current_word)
   and forest_list dico current_word =
     match dico with
     |[] -> []
     |Lettre(c, fin, fils)::xs ->
-      if fin then loop fils [current_word ^ Char.escaped c] (current_word ^ Char.escaped c) @ forest_list xs current_word
-      else loop fils [] (current_word ^ Char.escaped c) @ forest_list xs current_word
+      let new_str = (current_word^(Char.escaped c)) in
+      if fin then loop fils [new_str] new_str @ forest_list xs current_word
+      else loop fils [] new_str @ forest_list xs current_word
   in loop dico [] ""
 
 let affiche (dico : arbre_lex) : unit =
   let l = list_de_dict dico in
   List.iter (print_endline) l
+
+let enregistre (file : string) (dico : arbre_lex): unit =
+  let out = open_out file in
+  List.iter (fun x -> output_string out x ; output_string out "\n") (list_de_dict dico) ;
+  close_out out
+
+let ouvre (file : string) : arbre_lex =
+  let rec lines fp =
+    try
+      let line = input_line fp in
+      line ::lines fp
+    with
+    | End_of_file -> []
+  in
+  let file_in = open_in file in
+  let dico = construit (lines file_in) in
+  close_in file_in ; dico
+
+
 
 let rec main =
   let dico = ref [] in
@@ -82,13 +106,20 @@ let rec main =
           (if existe mot !dico then print_endline "oui"
            else print_endline "non" ); main ()
         |"ajoute" -> dico := ajoute mot !dico; main ()
-        |_ -> raise (Invalid_argument "ezfn")
+        |"enregistre" -> enregistre mot !dico ; main ()
+        |"ouvre" -> dico := (ouvre mot) ; main ()
+        |_ -> print_endline "Erreur : commande inconnu
+    ou mal ecrite." ; main ()
       end
     |action::[] ->
       begin
         match action with
         |"affiche" -> affiche !dico ; main()
         |"quitte" -> ()
-        |_ -> raise (Invalid_argument "vzfz")
+        |_ -> print_endline "Erreur : commande inconnu
+    ou mal ecrite." ; main ()
       end
-    |_ -> raise (Invalid_argument "vzirg")
+    |_ -> print_endline "Erreur : commande inconnu
+ou mal ecrite." ; main ()
+
+let start () = print_string "Bienvenue !"; main ()
