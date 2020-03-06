@@ -1,0 +1,8 @@
+# dune exec src/test_tableur.exe -f
+# OCAMLPARAM: unset
+$ /usr/bin/nproc > /tmp/duneffb421.output 2> /dev/null
+$ /users/Etu5/3679695/.opam/4.06.1/bin/ocamlc.opt -config > /tmp/dunee7ec9e.output
+$ (cd _build/default && /users/Etu5/3679695/.opam/4.06.1/bin/ocamldep.opt -modules -impl src/test_tableur.ml) > _build/default/src/.test_tableur.eobjs/test_tableur.ml.d
+$ (cd _build/default && /users/Etu5/3679695/.opam/4.06.1/bin/ocamlc.opt -w @a-4-29-40-41-42-44-45-48-58-59-60-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -I src/.test_tableur.eobjs -I src/.tableur.objs -no-alias-deps -opaque -o src/.test_tableur.eobjs/test_tableur.cmo -c -impl src/test_tableur.ml)
+$ (cd _build/default && /users/Etu5/3679695/.opam/4.06.1/bin/ocamlopt.opt -w @a-4-29-40-41-42-44-45-48-58-59-60-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I src/.test_tableur.eobjs -I src/.tableur.objs -intf-suffix .ml -no-alias-deps -opaque -o src/.test_tableur.eobjs/test_tableur.cmx -c -impl src/test_tableur.ml)
+$ (cd _build/default && /users/Etu5/3679695/.opam/4.06.1/bin/ocamlopt.opt -w @a-4-29-40-41-42-44-45-48-58-59-60-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -o src/test_tableur.exe -I src src/tableur.cmxa src/.test_tableur.eobjs/test_tableur.cmx)

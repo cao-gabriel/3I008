@@ -9,5 +9,6 @@
  (modules test_tableur)
  (flags (:standard))
 )
-
-
+(alias
+ (name runtest)
+ (action (run %{exe:test_tableur.exe})))

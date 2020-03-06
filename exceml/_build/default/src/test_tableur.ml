@@ -120,7 +120,7 @@ let test10 () =
   let r_grille = eval_grille grille in
   assert(r_grille.(1).(1) = REntier 1);
   assert(r_grille.(2).(0) = REntier 0);
-  assert(r_grille.(3).(0) = REntier 0) (*-1 + (-1) + 1 + 1*)
+  assert(r_grille.(3).(0) = REntier 0)
 
 
 let run_tests () =
