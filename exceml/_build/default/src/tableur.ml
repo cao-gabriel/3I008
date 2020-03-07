@@ -135,6 +135,7 @@ let eval_expr  =
   let cache = Hashtbl.create 50 in
   let rec loop (e : expr) (g : grille): resultat =
     try
+      print_endline "le cache fait son effet";
       Hashtbl.find cache e
     with
     | Not_found ->
