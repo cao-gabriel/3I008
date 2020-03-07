@@ -202,7 +202,6 @@ let rec puissance_exp x n =
     if n mod 2 = 0 then np * np
     else np * np * x
 
-
 let rec puissance_exp_float (x : float) (n : int) : float =
   if n = 0 then 1.
   else
