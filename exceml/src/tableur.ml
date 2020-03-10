@@ -297,6 +297,7 @@ let puissance (res1 : resultat) (res2 : resultat) : resultat=
   match res1,res2 with
   | REntier x, REntier y -> REntier (puissance_exp x y)
   | RFlottant x, REntier y -> RFlottant (puissance_exp_float x y)
+  | RFlottant x, RFlottant y -> RFlottant (x ** y)
   (*non valide*)
   | RFlottant _, _ | _, RFlottant _
   | RChaine _, _ | _, RChaine _
@@ -321,6 +322,18 @@ let minimum (res1 : resultat) (res2 : resultat) : resultat=
   match res1,res2 with
   | REntier x, REntier y -> REntier (min x y)
   | RFlottant x, RFlottant y -> RFlottant (min x y)
+  (*non valide*)
+  | RFlottant _, _ | _, RFlottant _
+  | RChaine _, _ | _, RChaine _
+  | REntier _, _ | _, REntier _
+  | RVide, _ | _, RVide
+  | Erreur _, _ -> Erreur Argument_non_valide
+
+(*Moyenne de 2 entiers et de 2 flottants posssibles*)
+let moyenne (res1 : resultat) (res2 : resultat) : resultat=
+  match res1,res2 with
+  | REntier x, REntier y -> REntier ((x + y) / 2)
+  | RFlottant x, RFlottant y -> RFlottant ((x +. y) /. 2.)
   (*non valide*)
   | RFlottant _, _ | _, RFlottant _
   | RChaine _, _ | _, RChaine _
@@ -360,6 +373,8 @@ let mymax (e1 : expr) (e2 : expr) : expr =
   Binaire({app2 = maximum; gauche = e1; droite = e2})
 let mymin (e1 : expr) (e2 : expr) : expr =
   Binaire({app2 = minimum; gauche = e1; droite = e2})
+let mymoy (e1 : expr) (e2 : expr) : expr =
+  Binaire({app2 = moyenne; gauche = e1; droite = e2})
 
 
 
