@@ -477,3 +477,19 @@ let max_reduce case_debut case_fin : expr =
 let min_reduce case_debut case_fin : expr =
   Reduction({app = minimum; init = REntier(0); case_debut = case_debut;
              case_fin = case_fin})
+let moy_reduce case_debut case_fin : expr =
+let ((i,j),(k,l)) = (case_debut, case_fin) in
+let nb_case = (abs (i - j)) * (abs (k - l)) in
+let moy_red (res1 : resultat) (res2 : resultat) : resultat=
+  match res1,res2 with
+  | REntier x, REntier y -> REntier (x / nb_case + y)
+  | RFlottant x, RFlottant y -> RFlottant (x /. (float_of_int nb_case) +. y)
+  (*non valide*)
+  | RFlottant _, _ | _, RFlottant _
+  | RChaine _, _ | _, RChaine _
+  | REntier _, _ | _, REntier _
+  | RVide, _ | _, RVide
+  | Erreur _, _ -> Erreur Argument_non_valide
+in
+  Reduction({app = moy_red; init = REntier(0); case_debut = case_debut;
+             case_fin = case_fin})
